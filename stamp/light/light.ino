@@ -18,6 +18,7 @@
 // How many leds in your strip?
 #define NUM_LEDS 1
 #define DATA_PIN 27
+#define OUT_PIN 25
 
 #define SSID "rocher_guest"
 #define PASS "sd5ks86vn5nti"
@@ -42,6 +43,9 @@ void setup() {
   pinMode(36,INPUT);
   delay(10);
 
+  ledcSetup(0,12800,8);
+  ledcAttachPin(OUT_PIN,0);
+  
   WiFi.begin(SSID, PASS);
   Serial.println("Connecting...");
   while (WiFi.status() != WL_CONNECTED) {
@@ -66,6 +70,7 @@ void loop() {
 
   String payload = http.getString();
   setLEDColor(( payload.equals("ON") ) ? 0xf00000 : 0x00f000);
+  ledcWrite(0,(( payload.equals("ON") ) ? 256 : 0));
   Serial.printf("payload:%s\n",payload);
   http.end();
   Serial.printf("getResult:%d\n",httpCode);
