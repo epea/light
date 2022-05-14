@@ -11,11 +11,17 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
         print('parsed: path = {}, query = {}'.format(parsed_path.path, parse_qs(parsed_path.query)))
 
         print('headers\r\n-----\r\n{}-----'.format(self.headers))
-       
+     
+        sensor_value = int(parse_qs(parsed_path.query)['data'][0])
+        light= 'ON' if sensor_value <3000 else 'OFF'
+        print(light)
+
+
+
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'Hello from do_GET')
+        self.wfile.write(light.encode())
 
 with HTTPServer(address, MyHTTPRequestHandler) as server:
     server.serve_forever()
