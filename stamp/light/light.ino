@@ -56,16 +56,6 @@ loop()函数是一个死循环，其中的程序会不断的重复运行 */
 void loop() {
   Serial.println("LOOP");
 
-  leds[0] = 0xf00000;
-  delay(10);
-  FastLED.show();
-  delay(500);
-  // Now turn the LED off, then pause
-  leds[0] = 0x00f000;
-  delay(10);
-  FastLED.show();
-  delay(500);
-
   int valueBefore = analogRead(36);
   Serial.printf("analogRead:%d\n",valueBefore);
 
@@ -73,6 +63,17 @@ void loop() {
   Serial.println(hoge);
   http.begin( hoge );
   int httpCode = http.GET();
+
+  String payload = http.getString();
+  setLEDColor(( payload.equals("ON") ) ? 0xf00000 : 0x00f000);
+  Serial.printf("payload:%s\n",payload);
   http.end();
   Serial.printf("getResult:%d\n",httpCode);
+  delay(1000);
+}
+
+void setLEDColor(int rgb){
+  leds[0] = rgb;
+  delay(10);
+  FastLED.show();
 }
