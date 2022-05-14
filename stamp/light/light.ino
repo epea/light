@@ -13,6 +13,7 @@
 #include "Arduino.h"
 #include <FastLED.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
 
 // How many leds in your strip?
 #define NUM_LEDS 1
@@ -21,8 +22,12 @@
 #define SSID "rocher_guest"
 #define PASS "sd5ks86vn5nti"
 
+#define SERVER_URL "http://192.168.1.13:8080/?data="
+
 // Define the array of leds
 CRGB leds[NUM_LEDS];
+
+HTTPClient http;
 
 /* After STAMP-PICO is started or reset
   the program in the setUp () function will be run, and this part will only be run once.
@@ -63,4 +68,11 @@ void loop() {
 
   int valueBefore = analogRead(36);
   Serial.printf("analogRead:%d\n",valueBefore);
+
+  String hoge = SERVER_URL + String(valueBefore);
+  Serial.println(hoge);
+  http.begin( hoge );
+  int httpCode = http.GET();
+  http.end();
+  Serial.printf("getResult:%d\n",httpCode);
 }
