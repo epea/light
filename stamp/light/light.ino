@@ -27,41 +27,67 @@ void setup() {
   Serial.println("start");
   delay(10);
 
-  FastLED.addLeds<SK6812, DATA_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.addLeds<SK6812, DATA_PIN, GRB>(leds, NUM_LEDS);
   
   pinMode(36,INPUT);
   delay(10);
 
   ledcSetup(0,12800,8);
   ledcAttachPin(OUT_PIN,0);
+
+  startLight();
   
   WiFi.begin(SSID, PASS);
   Serial.println("Connecting...");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    connectingLight();
   }
 }
 
 void loop() {
-  Serial.println("LOOP");
-
+  Serial.println("LOOP Start");
+  setLEDColor(CRGB::Black);
+  delay(100);
+  
   int valueBefore = analogRead(36);
   String getURL = SERVER_URL + String(valueBefore);
   Serial.println(getURL);
   http.begin( getURL );
   int httpCode = http.GET();
-
-  String payload = http.getString();
-  setLEDColor(( payload.equals("ON") ) ? 0xf00000 : 0x00f000);
-  ledcWrite(0,(( payload.equals("ON") ) ? 256 : 0));
-  Serial.printf("payload:%s\n",payload);
-  http.end();
   Serial.printf("getResult:%d\n",httpCode);
+  if(httpCode != HTTP_CODE_OK){
+    setLEDColor(CRGB::Red);
+  } else {
+      String payload = http.getString();
+      setLEDColor(( payload.equals("ON") ) ? CRGB::Green : CRGB::Blue);
+      ledcWrite(0,(( payload.equals("ON") ) ? 256 : 0));
+      Serial.printf("payload:%s\n",payload);
+  }
+  http.end();
   delay(1000);
+  Serial.println("LOOP Fin");
 }
 
-void setLEDColor(int rgb){
-  leds[0] = rgb;
+void setLEDColor(int grb){
+  leds[0] = grb;
   delay(10);
   FastLED.show();
+}
+
+void startLight(){
+  for(int i=0;i<5;i++){
+    setLEDColor(CRGB::Red);
+    delay(100);
+    setLEDColor(CRGB::Black);
+    delay(100);
+  }
+}
+
+void connectingLight(){
+  for(int i=0;i<5;i++){
+    setLEDColor(CRGB::Orange);
+    delay(75);
+    setLEDColor(CRGB::Black);
+    delay(25);
+  }
 }
