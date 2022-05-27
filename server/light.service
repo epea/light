@@ -1,0 +1,14 @@
+[Unit]
+Description=light Daemon
+
+[Service]
+WorkingDirectory=/home/pi/develop/develop/light/server
+ExecStart=/home/pi/.pyenv/versions/3.7.0/bin/python /home/pi/develop/develop/light/server/light_cntrol_server.py
+ExecStop=/bin/kill ${MAINPID}
+Restart=always
+Type=simple
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
