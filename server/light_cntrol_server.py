@@ -5,18 +5,10 @@ address = ('192.168.1.13', 8080)
 
 class MyHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        print('path = {}'.format(self.path))
-
         parsed_path = urlparse(self.path)
-        print('parsed: path = {}, query = {}'.format(parsed_path.path, parse_qs(parsed_path.query)))
-
-        print('headers\r\n-----\r\n{}-----'.format(self.headers))
      
         sensor_value = int(parse_qs(parsed_path.query)['data'][0])
         light= 'ON' if sensor_value <3000 else 'OFF'
-        print(light)
-
-
 
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
