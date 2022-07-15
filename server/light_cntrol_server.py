@@ -5,9 +5,10 @@ from datetime import time, datetime
 
 address = ('192.168.1.13', 8080)
 def is_open():
+    morning = time(10,00,0)
     night = time(22,00,0)
     current_time = datetime.now().time()
-    return current_time < night 
+    return (morning < current_time) and (current_time < night)
 
 class MyHTTPRequestHandler(BaseHTTPRequestHandler):
 
