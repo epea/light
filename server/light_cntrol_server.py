@@ -17,7 +17,7 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
         parsed_path = urlparse(self.path)
      
         sensor_value = int(parse_qs(parsed_path.query)['data'][0])
-        light= 'ON' if ((sensor_value <3000) and is_open()) else 'OFF'
+        light= 'ON' if ((sensor_value <1950) and is_open()) else 'OFF'
 
         self.send_response(200)
         self.send_header('Content-Type', 'text/plain; charset=utf-8')
